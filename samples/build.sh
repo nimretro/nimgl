@@ -1,9 +1,8 @@
 # set -x 1
 
-PROGRAM=triangle
-PLAT=win64
-# PLAT=arm64
-MODE=release
+PROGRAM=${1-triangle}
+PLAT=${2-win64} # win64 or arm64
+MODE=${3-release}
 
 FLAGS="-d:nimDebugDlOpen"
 
@@ -24,6 +23,13 @@ else
     echo "unknown platform: $PLAT"
     exit 1
 fi
+
+echo
+echo PROGRAM: $PROGRAM
+echo PLAT: $PLAT
+echo MODE: $MODE
+echo FLAGS: $FLAGS
+echo
 
 nim c $FLAGS $PROGRAM.nim
 if test $MODE = "release"; then
