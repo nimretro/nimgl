@@ -5,9 +5,12 @@ author = "Saniko"
 description = "an OpenGL/GLES2 wrapper"
 license = "MIT"
 
-srcDir = "gl"
+# Directory configuration
+installDirs = @["nimgl"]
+installFiles = @["nimgl.nim"]
 
 # Dependencies
+requires "sdl2"
 
 when defined(windows):
   requires "nim >= 0.11.0"

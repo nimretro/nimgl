@@ -1,15 +1,16 @@
 import strformat
 import sdl2
-import enums
+import nimgl/enums
+export enums
 
 when defined(windows):
-    import gl460
+    import nimgl/gl460
     export gl460
 elif defined(macosx):
-    import gl410
+    import nimgl/gl410
     export gl410
 else:
-    import gles300
+    import nimgl/gles300
     export gles300
 
 when declared(glDebugMessageCallback):

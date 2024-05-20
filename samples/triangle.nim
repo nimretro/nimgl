@@ -1,5 +1,5 @@
 import sdl2
-import ../gl/opengl
+import nimgl
 
 import sequtils
 
