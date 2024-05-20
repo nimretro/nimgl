@@ -20,10 +20,6 @@ void main() {
 }
 """
 
-const
-  SDL_RENDERER_ACCELERATED = 0x00000002
-  SDL_RENDERER_TARGETTEXTURE = 0x00000008
-
 proc main(): void =
   # // SDL_Init(SDL_INIT_VIDEO)
   var wnd = sdl2.createWindow("test", sdl2.SDL_WINDOWPOS_CENTERED,
@@ -41,7 +37,7 @@ proc main(): void =
   if glc == nil:
     quit(1)
 
-  var rdr = sdl2.createRenderer(wnd, -1, SDL_RENDERER_ACCELERATED + SDL_RENDERER_TARGETTEXTURE)
+  var rdr = sdl2.createRenderer(wnd, -1, Renderer_Accelerated + Renderer_TargetTexture)
   if rdr == nil:
     quit(1)
 
@@ -76,10 +72,9 @@ proc main(): void =
   glGetShaderiv(vertexShader, GL_COMPILE_STATUS, addr success)
   if success == 0:
     var infoLog: array[512, GLchar]
-    glGetShaderInfoLog(vertexShader, 512, nil, addr infoLog[0])
+    glGetShaderInfoLog(vertexShader, 512, nil, cast[cstring](addr infoLog))
     glDeleteShader(vertexShader)
-    echo(cast[string](sequtils.filter(infoLog, proc(x: GLchar): bool = int(
-        x) > 0)))
+    echo(cast[string](sequtils.filter(infoLog, proc(x: GLchar): bool = x > 0)))
     quit(1)
 
   # Create and compile the fragment shader
@@ -91,10 +86,9 @@ proc main(): void =
   glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, addr success)
   if success == 0:
     var infoLog: array[512, GLchar]
-    glGetShaderInfoLog(fragmentShader, 512, nil, addr infoLog[0])
+    glGetShaderInfoLog(fragmentShader, 512, nil, cast[cstring](addr infoLog[0]))
     glDeleteShader(fragmentShader)
-    echo(cast[string](sequtils.filter(infoLog, proc(x: GLchar): bool = int(
-        x) > 0)))
+    echo(cast[string](sequtils.filter(infoLog, proc(x: GLchar): bool = x > 0)))
     quit(1)
 
   # Link the vertex and fragment shader into a shader program
