@@ -37,7 +37,7 @@ proc main(): void =
   discard sdl2.glSetAttribute(sdl2.SDL_GL_DOUBLEBUFFER, 1)
   discard sdl2.glSetAttribute(sdl2.SDL_GL_DEPTH_SIZE, 24)
 
-  var glc = sdl2.glCreateContext(wnd)
+  var glc = createOpenGLContext(wnd)
   if glc == nil:
     quit(1)
 
@@ -46,9 +46,6 @@ proc main(): void =
     quit(1)
 
   discard sdl2.glMakeCurrent(wnd, glc)
-
-  when defined(windows):
-    opengl.loadExtensions()
 
   # Create Vertex Array Object
   var vao: GLuint
@@ -67,7 +64,7 @@ proc main(): void =
   var vertices: array[6, GLfloat] = [0.0f, 0.5f, 0.5f, -0.5f, -0.5f, -0.5f]
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo)
-  glBufferData(GL_ARRAY_BUFFER, sizeof vertices, addr vertices, GL_STATIC_DRAW)
+  glBufferData(GL_ARRAY_BUFFER, cint(sizeof vertices), addr vertices, GL_STATIC_DRAW)
 
   # Create and compile the vertex shader
   var vertexShader = glCreateShader(GL_VERTEX_SHADER)
@@ -112,7 +109,7 @@ proc main(): void =
   # Specify the layout of the vertex data
   var posAttrib = glGetAttribLocation(shaderProgram, "position")
   glEnableVertexAttribArray(GLuint(posAttrib))
-  glVertexAttribPointer(GLuint(posAttrib), 2, cGL_FLOAT, GL_FALSE, 0, nil)
+  glVertexAttribPointer(GLuint(posAttrib), 2, cGL_FLOAT, false, 0, nil)
 
   var e: sdl2.Event
   while true:
