@@ -119,3 +119,5 @@ proc debugOpenGL*() =
 
 # operator override
 proc `<`*(x : int, y: GLchar): bool = x < int(y)
+proc `/`*(x, y: GLuint): float = float(x) / float(y)
+
