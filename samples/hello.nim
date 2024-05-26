@@ -8,6 +8,9 @@ var
   render: RendererPtr
 
 window = createWindow("SDL Skeleton", 100, 100, 640,480, SDL_WINDOW_SHOWN)
+if window == nil:
+  echo("unable to create window")
+  quit(1)
 render = createRenderer(window, -1, Renderer_Accelerated or Renderer_PresentVsync or Renderer_TargetTexture)
 
 var

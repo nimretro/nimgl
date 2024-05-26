@@ -1,6 +1,7 @@
 # set -x 1
+TRIMUI_HOST="192.168.3.7"
 
-PROGRAM=${1-triangle}
+PROGRAM=${1-s01_triangle}
 PLAT=${2-win64} # win64 or arm64
 MODE=${3-release}
 
@@ -18,6 +19,11 @@ elif test $PLAT = "arm64"; then
     export PATH="$PATH:/home/lilin/opt/trimui_smart_pro/aarch64-linux-gnu-7.5.0-linaro/bin"
     FLAGS="$FLAGS --cpu:arm64 --os:linux"
     STRIP=aarch64-linux-gnu-strip
+    OUTPUT=$PROGRAM
+elif test $PLAT = "arm32"; then
+    # export PATH="$PATH:/home/lilin/opt/trimui_smart_pro/aarch64-linux-gnu-7.5.0-linaro/bin"
+    FLAGS="$FLAGS --cpu:arm --os:linux --opt:speed"
+    STRIP=arm-linux-gnueabihf-strip
     OUTPUT=$PROGRAM
 else
     echo "unknown platform: $PLAT"
@@ -37,8 +43,13 @@ if test $MODE = "release"; then
 fi
 
 if test $PLAT = "arm64"; then
-    # scp *.bmp root@trimui:/mnt/SDCARD/Apps/hello/
-    scp $PROGRAM root@trimui:/mnt/SDCARD/Apps/hello/hello
+    # scp *.bmp root@$TRIMUI_HOST:/mnt/SDCARD/Apps/hello/
+    scp $PROGRAM root@$TRIMUI_HOST:/mnt/SDCARD/Apps/sdlarch/sdlarch
+    # scp $PROGRAM root@$TRIMUI_HOST:/mnt/SDCARD/Apps/hello/hello
+elif test $PLAT = "arm32"; then
+    # scp *.bmp root@$TRIMUI_HOST:/mnt/SDCARD/Apps/hello/
+    # scp $PROGRAM root@$TRIMUI_HOST:/mnt/SDCARD/Apps/sdlarch/sdlarch
+    scp $PROGRAM root@192.168.3.10:/mnt/sdcard/work
 elif test $PLAT = "win64"; then
     cp $PROGRAM.exe /mnt/h/wsl2/gles
 fi
