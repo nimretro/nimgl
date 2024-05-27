@@ -15,6 +15,8 @@ proc compileShader*(typ: GLenum, source: string): GLuint =
   defer: deallocCStringArray(csa)
   glShaderSource(shader, 1, csa, nil)
   glCompileShader(shader)
+
+  # check for shader compile errors
   var success: GLint
   glGetShaderiv(shader, GL_COMPILE_STATUS, addr success)
   if success == 0:
@@ -32,25 +34,21 @@ proc compileShader*(typ: GLenum, source: string): GLuint =
 
   shader
 
-proc loadShaderProgram*(vertexSource, fragmentSource: string): GLuint =
-  # Create and compile the vertex shader
-  var vertexShader = compileShader(GL_VERTEX_SHADER, vertexSource)
-
-  # Create and compile the fragment shader
-  var fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentSource)
-
+proc loadShaderProgram*(vertexShader, fragmentShader: GLuint): GLuint =
   # Link the vertex and fragment shader into a shader program
   var shaderProgram = glCreateProgram()
   glAttachShader(shaderProgram, vertexShader)
   glAttachShader(shaderProgram, fragmentShader)
 
+  # link shaders
   glLinkProgram(shaderProgram)
 
-  # glDeleteShader(vertexShader)
-  # glDeleteShader(fragmentShader)
+  glDeleteShader(vertexShader)
+  glDeleteShader(fragmentShader)
 
   glValidateProgram(shaderProgram)
 
+  # check for linking errors
   var status: GLint
   glGetProgramiv(shaderProgram, GL_LINK_STATUS, addr status)
 
@@ -61,3 +59,12 @@ proc loadShaderProgram*(vertexSource, fragmentSource: string): GLuint =
     die("Failed to link shader program: %s", buffer)
 
   shaderProgram
+
+proc loadShaderProgram*(vertexSource, fragmentSource: string): GLuint =
+  # Create and compile the vertex shader
+  var vertexShader = compileShader(GL_VERTEX_SHADER, vertexSource)
+
+  # Create and compile the fragment shader
+  var fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentSource)
+
+  loadShaderProgram(vertexShader, fragmentShader)
